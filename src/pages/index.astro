@@ -1,16 +1,148 @@
 ---
-
+import Layout from "../layouts/layout.astro";
+import emojis from "emojibase-data/en/data.json";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <div
+    class="flex justify-center h-dvh w-full items-center font-bold banner-text"
+  >
+    <div class="relative">
+      <h1
+        class="hover:font-light martian-mono-banner bg-white text-[14ch] lg:text-[20ch] relative z-20 cursor-pointer transition-all duration-500"
+        onclick="moveLetter(this)"
+      >
+        r
+      </h1>
+      <div class="absolute inset-0 z-10 flex items-center justify-center">
+        <a
+          href="/about"
+          class="font-bold text-4xl hidden-text hover:underline text-red-500 hover:text-red-800 transition-color duration-150"
+          >about</a
+        >
+      </div>
+    </div>
+    <div class="relative">
+      <h1
+        class="hover:font-light martian-mono-banner bg-white text-[14ch] lg:text-[20ch] relative z-20 cursor-pointer transition-all duration-500"
+        onclick="moveLetter(this)"
+      >
+        i
+      </h1>
+      <div class="absolute inset-0 z-10 flex items-center justify-center">
+        <a
+          href="/blog"
+          class="font-bold text-4xl hidden-text hover:underline text-blue-500 hover:text-blue-800 transition-color duration-150"
+          >blog</a
+        >
+      </div>
+    </div>
+    <div class="relative">
+      <h1
+        class="hover:font-light martian-mono-banner bg-white text-[14ch] lg:text-[20ch] relative z-20 cursor-pointer transition-light duration-500"
+        onclick="moveLetter(this)"
+      >
+        n
+      </h1>
+      <div class="absolute inset-0 z-10 flex items-center justify-center">
+        <a
+          href="/music"
+          class="font-bold text-4xl hidden-text hover:underline text-green-500 hover:text-green-800 transition-color duration-150"
+          >music</a
+        >
+      </div>
+    </div>
+    <div class="relative">
+      <h1
+        class="hover:font-light martian-mono-banner bg-white text-[14ch] lg:text-[20ch] relative z-20 cursor-pointer transition-all duration-500"
+        onclick="moveLetter(this)"
+      >
+        k
+      </h1>
+      <div class="absolute inset-0 z-10 flex items-center justify-center">
+        <a
+          href="/contact"
+          class="font-bold text-4xl hidden-text hover:underline text-yellow-500 hover:text-yellow-800 transition-color duration-150"
+          >contact</a
+        >
+      </div>
+    </div>
+    <div class="relative">
+      <h1
+        class="hover:font-light martian-mono-banner bg-white text-[14ch] lg:text-[20ch] relative z-20 cursor-pointer transition-all duration-500"
+        onclick="moveLetter(this)"
+      >
+        i
+      </h1>
+      <div class="absolute inset-0 z-10 flex items-center justify-center">
+        <button
+          class="font-bold text-4xl hidden-text hover:underline text-purple-500 hover:text-purple-800 cursor-pointer transition-color duration-150"
+          onclick="showEmoji(event)"
+          >enjoy ;)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="emojiContainer" class="fixed inset-0 pointer-events-none z-50"></div>
+
+  <script define:vars={{ emojis }}>
+    let currentMovedLetter;
+
+    function moveLetter(element) {
+      if (currentMovedLetter === element) {
+        element.style.transform = "translate(0, 0)";
+        currentMovedLetter = null;
+        return;
+      }
+
+      // 重置之前移动的字母
+      if (currentMovedLetter && currentMovedLetter !== element) {
+        currentMovedLetter.style.transform = "translate(0, 0)";
+      }
+
+      // 检查屏幕尺寸并设置移动方向
+      const isLargeScreen = window.innerWidth >= 1024; // lg 断点
+      const randomDirection = Math.random() > 0.5 ? -200 : 200;
+
+      if (isLargeScreen) {
+        element.style.transform = `translate(0, ${randomDirection}px)`;
+      } else {
+        element.style.transform = `translate(${randomDirection}px, 0)`;
+      }
+      currentMovedLetter = element;
+    }
+
+    function showEmoji(e) {
+      e.stopPropagation();
+
+      // 从 emojibase 数据中获取随机表情符号
+      function getRandomEmoji() {
+        const randomIndex = Math.floor(Math.random() * emojis.length);
+        return emojis[randomIndex].emoji;
+      }
+
+      const randomEmoji = getRandomEmoji();
+
+      const emojiElement = document.createElement("div");
+      emojiElement.textContent = randomEmoji;
+      emojiElement.className =
+        "absolute text-6xl animate-bounce pointer-events-none";
+      emojiElement.style.left =
+        Math.random() * (window.innerWidth - 100) + "px";
+      emojiElement.style.top =
+        Math.random() * (window.innerHeight - 100) + "px";
+
+      const container = document.getElementById("emojiContainer");
+      container?.appendChild(emojiElement);
+
+      setTimeout(() => {
+        emojiElement.remove();
+      }, 3000);
+    }
+
+    // 确保函数在全局作用域可用
+    window.moveLetter = moveLetter;
+    window.showEmoji = showEmoji;
+  </script>
+</Layout>

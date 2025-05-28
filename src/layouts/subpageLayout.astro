@@ -1,0 +1,43 @@
+---
+import "../styles/global.css";
+import Layout from "./layout.astro";
+
+interface Props {
+  title?: string;
+  titleColor?: string;
+  borderColor?: string;
+}
+
+const {
+  title = "my garden",
+  titleColor = "bg-red-500",
+  borderColor = "border-red-500",
+} = Astro.props;
+---
+
+<Layout>
+  <div class="mx-4 my-16">
+    <div class="flex gap-2">
+      <button
+        onclick="history.back()"
+        class={`group border-4 border-black bg-white rounded-full flex-none my-16 transition-all duration-300 hover:scale-110 hover:invert cursor-pointer`}
+      >
+        <div
+          class={`m-0.5 text-3xl text-center font-bold text-white px-10 py-4 rounded-full bg-black transition-colors duration-300`}
+        >
+          ←
+        </div>
+      </button>
+      <div
+        class={`group border-4 ${borderColor} rounded-full flex-1 my-16 hover:brightness-120 transition-all duration-300`}
+      >
+        <div
+          class={`m-0.5 text-3xl text-center font-bold text-white px-8 py-4 rounded-full ${titleColor} martian-mono-title group-hover:font-light transition-all duration-300`}
+        >
+          {title}
+        </div>
+      </div>
+    </div>
+    <slot class="hyphens-auto py-2" />
+  </div>
+</Layout>

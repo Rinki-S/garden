@@ -1,0 +1,190 @@
+---
+import SubpageLayout from "../../layouts/subpageLayout.astro";
+import "../../styles/animations.css";
+---
+
+<SubpageLayout
+  title="contact"
+  titleColor="bg-yellow-500"
+  borderColor="border-yellow-500"
+>
+  <div class="flex justify-center flex-col gap-8">
+    <div class="w-full">
+      <p class="text-center">how u can get in touch w/ me</p>
+    </div>
+    <div class="w-full h-128 flex flex-col gap-4" id="contact-container">
+      <div
+        class="contact-item flex-none bg-red-100 rounded-full outline-4 outline-offset-2 outline-red-500 cursor-pointer transition-all duration-300"
+        data-contact="email"
+      >
+        <div
+          class="flex flex-col text-center items-center justify-center h-full"
+        >
+          <span
+            class="font-black text-red-500 font-martian-mono text-3xl hover:font-stretch-125% transition-all duration-500 contact-title py-4"
+            >Email</span
+          >
+          <div class="contact-details" style="display:none;"></div>
+        </div>
+      </div>
+      <div
+        class="contact-item flex-none bg-blue-100 rounded-full outline-4 outline-offset-2 outline-blue-500 cursor-pointer transition-all duration-300"
+        data-contact="twitter"
+      >
+        <div
+          class="flex flex-col text-center items-center justify-center h-full"
+        >
+          <span
+            class="font-light text-blue-500 font-martian-mono text-3xl hover:font-stretch-125% transition-all duration-500 contact-title py-4"
+            >Twitter</span
+          >
+          <div class="contact-details" style="display:none;"></div>
+        </div>
+      </div>
+      <div
+        class="contact-item flex-none bg-green-100 rounded-full outline-4 outline-offset-2 outline-green-500 cursor-pointer transition-all duration-300"
+        data-contact="github"
+      >
+        <div
+          class="flex flex-col text-center items-center justify-center h-full"
+        >
+          <span
+            class="font-light text-green-500 font-martian-mono text-3xl hover:font-stretch-125% transition-all duration-500 contact-title py-4"
+            >GitHub</span
+          >
+          <div class="contact-details" style="display:none;"></div>
+        </div>
+      </div>
+      <div
+        class="contact-item flex-none bg-purple-100 rounded-full outline-4 outline-offset-2 outline-purple-500 cursor-pointer transition-all duration-300"
+        data-contact="qq"
+      >
+        <div
+          class="flex flex-col text-center items-center justify-center h-full"
+        >
+          <span
+            class="font-light text-purple-500 font-martian-mono text-3xl hover:font-stretch-125% transition-all duration-500 contact-title py-4"
+            >QQ</span
+          >
+          <div class="contact-details" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const contactItems = document.querySelectorAll(".contact-item");
+
+      const contactData = {
+        email: {
+          value: "iam@rinki.top",
+          action: "mailto:rinki@example.com",
+        },
+        twitter: {
+          value: "@riiiinki_owo",
+          action: "https://twitter.com/riiiinki_owo",
+        },
+        github: {
+          value: "github.com/rinki-s",
+          action: "https://github.com/rinki-s",
+        },
+        qq: {
+          value: "1792354603",
+          action: "copy",
+        },
+      };
+
+      contactItems.forEach((item) => {
+        item.addEventListener("click", function () {
+          if (!this.classList.contains("flex-1")) {
+            // 重置所有元素
+            contactItems.forEach((otherItem) => {
+              otherItem.classList.remove("flex-1");
+              otherItem.classList.add("flex-none");
+              otherItem.style.height = "4rem";
+
+              const span = otherItem.querySelector(".contact-title");
+              const details = otherItem.querySelector(".contact-details");
+
+              if (span) {
+                span.classList.remove("font-black");
+                span.classList.add("font-light");
+              }
+
+              if (details) {
+                details.style.display = "none";
+                details.style.opacity = "0";
+              }
+            });
+
+            // 设置活动元素
+            this.classList.remove("flex-none");
+            this.classList.add("flex-1");
+            this.style.height = "auto";
+
+            const activeSpan = this.querySelector(".contact-title");
+            const activeDetails = this.querySelector(".contact-details");
+
+            if (activeSpan) {
+              activeSpan.classList.remove("font-light");
+              activeSpan.classList.add("font-black");
+            }
+
+            // 等待 500ms 后显示详细信息
+            if (activeDetails) {
+              setTimeout(() => {
+                const contactType = this.getAttribute("data-contact");
+                const data = contactData[contactType];
+
+                activeDetails.innerHTML = `
+              <p class="text-xl mb-2">${data.value}</p>
+              <button class="contact-button bg-white bg-opacity-50 px-4 py-2 rounded-full text-xl hover:shadow-xl hover:underline hover:font-black cursor-pointer transition-all duration-300" data-contact-type="${contactType}">
+                click to ${contactType === "qq" ? "copy" : "visit"}
+              </button>
+            `;
+                activeDetails.style.display = "block";
+                activeDetails.style.opacity = "0";
+
+                // 为新按钮添加点击事件
+                const button = activeDetails.querySelector(".contact-button");
+                button.addEventListener("click", function (e) {
+                  e.stopPropagation(); // 防止触发父元素的点击事件
+
+                  const type = this.getAttribute("data-contact-type");
+                  const contactInfo = contactData[type];
+
+                  if (type === "qq") {
+                    // 复制到剪贴板
+                    navigator.clipboard
+                      .writeText(contactInfo.value)
+                      .then(() => {
+                        this.textContent = "copied!";
+                        setTimeout(() => {
+                          this.textContent = "click to copy";
+                        }, 2000);
+                      })
+                      .catch(() => {
+                        alert("failed to copy to clipboard");
+                      });
+                  } else {
+                    // 打开链接
+                    window.open(contactInfo.action, "_blank");
+                  }
+                });
+
+                // 淡入动画
+                setTimeout(() => {
+                  activeDetails.style.opacity = "1";
+                }, 10);
+              }, 500);
+            }
+          }
+        });
+      });
+
+      // 初始化第一个元素
+      contactItems[0].click();
+    });
+  </script>
+</SubpageLayout>

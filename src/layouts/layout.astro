@@ -1,0 +1,41 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import { slide } from "astro:transitions";
+---
+
+<html
+  lang="en"
+  transition:name="root"
+  transition:animate={slide({ duration: "1s" })}
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>rinki's garden</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@112.5,100..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/twemoji-colr-font@15.0.3/twemoji.min.css"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+  </head>
+  <body class="flex justify-center min-h-screen">
+    <div class="max-w-prose w-full">
+      <slot />
+    </div>
+  </body>
+</html>

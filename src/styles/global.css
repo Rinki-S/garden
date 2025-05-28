@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --font-martian-mono: "Martian Mono", monospace;
+  --font-sans: "Geist", "Twemoji", sans-serif;
+}
+
+.martian-mono-banner {
+  font-family: "Martian Mono", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wdth" 112.5;
+  text-box-trim: trim-both;
+}
+
+.martian-mono-title {
+  font-family: "Martian Mono", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wdth" 75;
+  text-box-trim: trim-both;
+}
+
+.banner-text {
+  writing-mode: horizontal-tb;
+}
+
+.hidden-text {
+  writing-mode: horizontal-tb;
+}
+
+.trimmed-text {
+  text-box-trim: trim-both;
+}
+
+@layer base {
+  body {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+@media (max-width: 1023px) {
+  .banner-text {
+    writing-mode: vertical-lr;
+  }
+}
