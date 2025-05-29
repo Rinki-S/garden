@@ -12,7 +12,7 @@ import "../../styles/animations.css";
     <div class="w-full">
       <p class="text-center">how u can get in touch w/ me</p>
     </div>
-    <div class="w-full h-128 flex flex-col gap-4" id="contact-container">
+    <div class="h-128 flex flex-col gap-4" id="contact-container">
       <div
         class="contact-item flex-none bg-red-100 rounded-full outline-4 outline-offset-2 outline-red-500 cursor-pointer transition-all duration-300"
         data-contact="email"
@@ -73,13 +73,20 @@ import "../../styles/animations.css";
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    // 确保页面完全加载后再执行
+    function initializeContact() {
       const contactItems = document.querySelectorAll(".contact-item");
+
+      // 如果元素还没有加载完成，稍后重试
+      if (contactItems.length === 0) {
+        setTimeout(initializeContact, 100);
+        return;
+      }
 
       const contactData = {
         email: {
           value: "iam@rinki.top",
-          action: "mailto:rinki@example.com",
+          action: "mailto:iam@rinki.top",
         },
         twitter: {
           value: "@riiiinki_owo",
@@ -96,13 +103,13 @@ import "../../styles/animations.css";
       };
 
       contactItems.forEach((item) => {
-        item.addEventListener("click", function () {
+        item.addEventListener("click", function (this: HTMLElement) {
           if (!this.classList.contains("flex-1")) {
             // 重置所有元素
             contactItems.forEach((otherItem) => {
               otherItem.classList.remove("flex-1");
               otherItem.classList.add("flex-none");
-              otherItem.style.height = "4rem";
+              (otherItem as HTMLElement).style.height = "4rem";
 
               const span = otherItem.querySelector(".contact-title");
               const details = otherItem.querySelector(".contact-details");
@@ -113,8 +120,8 @@ import "../../styles/animations.css";
               }
 
               if (details) {
-                details.style.display = "none";
-                details.style.opacity = "0";
+                (details as HTMLElement).style.display = "none";
+                (details as HTMLElement).style.opacity = "0";
               }
             });
 
@@ -134,7 +141,11 @@ import "../../styles/animations.css";
             // 等待 500ms 后显示详细信息
             if (activeDetails) {
               setTimeout(() => {
-                const contactType = this.getAttribute("data-contact");
+                const contactType = this.getAttribute(
+                  "data-contact"
+                ) as keyof typeof contactData;
+                if (!contactType || !(contactType in contactData)) return;
+
                 const data = contactData[contactType];
 
                 activeDetails.innerHTML = `
@@ -143,39 +154,45 @@ import "../../styles/animations.css";
                 click to ${contactType === "qq" ? "copy" : "visit"}
               </button>
             `;
-                activeDetails.style.display = "block";
-                activeDetails.style.opacity = "0";
+                (activeDetails as HTMLElement).style.display = "block";
+                (activeDetails as HTMLElement).style.opacity = "0";
 
                 // 为新按钮添加点击事件
                 const button = activeDetails.querySelector(".contact-button");
-                button.addEventListener("click", function (e) {
-                  e.stopPropagation(); // 防止触发父元素的点击事件
+                if (button) {
+                  button.addEventListener("click", (e) => {
+                    e.stopPropagation(); // 防止触发父元素的点击事件
 
-                  const type = this.getAttribute("data-contact-type");
-                  const contactInfo = contactData[type];
+                    const type = button.getAttribute(
+                      "data-contact-type"
+                    ) as keyof typeof contactData;
+                    if (!type || !(type in contactData)) return;
 
-                  if (type === "qq") {
-                    // 复制到剪贴板
-                    navigator.clipboard
-                      .writeText(contactInfo.value)
-                      .then(() => {
-                        this.textContent = "copied!";
-                        setTimeout(() => {
-                          this.textContent = "click to copy";
-                        }, 2000);
-                      })
-                      .catch(() => {
-                        alert("failed to copy to clipboard");
-                      });
-                  } else {
-                    // 打开链接
-                    window.open(contactInfo.action, "_blank");
-                  }
-                });
+                    const contactInfo = contactData[type];
+
+                    if (type === "qq") {
+                      // 复制到剪贴板
+                      navigator.clipboard
+                        .writeText(contactInfo.value)
+                        .then(() => {
+                          this.textContent = "copied!";
+                          setTimeout(() => {
+                            this.textContent = "click to copy";
+                          }, 2000);
+                        })
+                        .catch(() => {
+                          alert("failed to copy to clipboard");
+                        });
+                    } else {
+                      // 打开链接
+                      window.open(contactInfo.action, "_blank");
+                    }
+                  });
+                }
 
                 // 淡入动画
                 setTimeout(() => {
-                  activeDetails.style.opacity = "1";
+                  (activeDetails as HTMLElement).style.opacity = "1";
                 }, 10);
               }, 500);
             }
@@ -183,8 +200,25 @@ import "../../styles/animations.css";
         });
       });
 
-      // 初始化第一个元素
-      contactItems[0].click();
+      // 初始化第一个元素 - 延迟执行确保所有事件监听器都已添加
+      setTimeout(() => {
+        if (contactItems[0]) {
+          (contactItems[0] as HTMLElement).click();
+        }
+      }, 100);
+    }
+
+    // 多种方式确保初始化
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initializeContact);
+    } else {
+      // DOM 已经加载完成
+      initializeContact();
+    }
+
+    // 备用方案 - 页面完全加载后
+    window.addEventListener("load", function () {
+      setTimeout(initializeContact, 50);
     });
   </script>
 </SubpageLayout>

@@ -6,7 +6,7 @@ const LASTFM_API_KEY = "fe2034203a6d547f4e00094af07e1661";
 const LASTFM_USERNAME = "R1111nki";
 
 // 简单的获取封面函数
-async function getAlbumCover(mbid) {
+async function getAlbumCover(mbid: string) {
   console.log("mbid:" + mbid);
   if (!mbid) return null;
 
@@ -65,14 +65,16 @@ try {
       artist: track.artist["#text"],
       isPlaying: track["@attr"]?.nowplaying === "true",
       mbid: track.mbid,
+      image: "Unknown",
     };
 
     // Use the image directly from Last.fm API response
     if (track.image && track.image.length > 0) {
       // Usually the last image in the array is the largest
       const largeImage =
-        track.image.find((img) => img.size === "extralarge") ||
-        track.image[track.image.length - 1];
+        track.image.find(
+          (img: { size: string }) => img.size === "extralarge"
+        ) || track.image[track.image.length - 1];
       currentTrack.image = largeImage["#text"];
     }
   }
