@@ -33,7 +33,7 @@ async function getAlbumCover(mbid: string) {
       }
       // 返回 MusicBrainz 的封面 URL 格式
       const releaseId = element.id;
-      return `https://coverartarchive.org/release/${releaseId}/front-250`;
+      return `https://coverartarchive.org/release/${releaseId}/front-500`;
     }
   } catch (error) {
     console.error("Cover fetch error:", error);
@@ -107,7 +107,7 @@ try {
   titleColor="bg-green-500"
   borderColor="border-green-500"
 >
-  <div class="flex justify-center flex-col gap-8">
+  <div class="flex justify-center flex-col gap-12">
     <p class="w-full text-center">here's some music that i really love</p>
 
     <!-- 当前播放 -->
@@ -170,15 +170,15 @@ try {
         </h2>
       </div>
       <div class="bg-white mt-4">
-        <div class="space-y-4">
+        <div class="space-y-8">
           {
             topTracks.map((track, index) => (
               <div class="flex flex-col items-center gap-4">
                 <div class="flex flex-row gap-2">
-                  <div class="flex-none text-2xl font-black text-white py-2 px-4 rounded-full bg-purple-500 font-martian-mono transition-all duration-300">
+                  <div class="flex-none text-2xl font-black text-white py-2 px-4 rounded-full bg-purple-500 font-martian-mono hover:scale-110 hover:invert transition-all duration-300">
                     {index + 1}
                   </div>
-                  <p class="flex-1 text-2xl text-white bg-purple-500 rounded-full font-black hover:font-light font-martian-mono px-4 py-2">
+                  <p class="flex-1 text-2xl text-white bg-purple-500 rounded-full font-black hover:font-light font-martian-mono px-4 py-2 transition-all duration-300">
                     {track.playcount} plays
                   </p>
                 </div>
