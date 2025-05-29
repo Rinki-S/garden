@@ -50,6 +50,7 @@ let currentTrack = {
   mbid: "Unknown",
 };
 let topTracks = [];
+let topArtists = [];
 
 try {
   // 获取最近播放
@@ -96,6 +97,20 @@ try {
         mbid: track.mbid,
       });
     }
+  }
+
+  // 获取热门艺术家
+  const artistsResponse = await fetch(
+    `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${LASTFM_USERNAME}&api_key=${LASTFM_API_KEY}&format=json&period=1month&limit=8`
+  );
+  const artistsData = await artistsResponse.json();
+
+  if (artistsData.topartists?.artist) {
+    topArtists = artistsData.topartists.artist.map((artist: any) => ({
+      name: artist.name,
+      playcount: artist.playcount,
+      url: artist.url,
+    }));
   }
 } catch (error) {
   console.error("Failed to fetch music data:", error);
@@ -206,37 +221,93 @@ try {
         </div>
       </div>
     </div>
+
+    <!-- 热门艺术家 -->
+    <div class="w-full flex flex-col text-center justify-center">
+      <div
+        class="flex justify-center yellow-wave-title align-middle mb-4 relative"
+      >
+        <h2
+          class="text-2xl font-black hover:font-light font-martian-mono transition-all bg-white rounded-full border-10 border-yellow-500 py-2 px-8"
+        >
+          top artists
+        </h2>
+      </div>
+      <div class="bg-white p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {
+            topArtists.map(
+              (
+                artist: { name: unknown; playcount: unknown },
+                index: number
+              ) => (
+                <div class="flex flex-row items-center group flex-1 gap-4 bg-yellow-500 rounded-full py-4 px-5">
+                  <div class="relative align-middle">
+                    <div class="text-white w-[50px] py-1 bg-black rounded-full flex items-center justify-center text-2xl font-black">
+                      #{index + 1}
+                    </div>
+                  </div>
+                  <div class="text-left">
+                    <h3 class="text-xl font-bold font-martian-mono text-black transition-all duration-300 font-stretch-50% hover:font-stretch-125% leading-tight">
+                      {artist.name}
+                    </h3>
+                    <p class="text-sm text-yellow-900 mt-1">
+                      {artist.playcount} plays
+                    </p>
+                  </div>
+                </div>
+              )
+            )
+          }
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .blue-wave-title::before {
+        content: "";
+        position: absolute;
+        width: 400%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 40px;
+        background-image: url("data:image/svg+xml,%3Csvg width='480' height='40' viewBox='0 0 480 40' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 5H30V35H90V5H150V35H210V5H270V35H330V5H390V35H450V5H480' stroke='oklch(62.3%25%200.214%20259.815)' stroke-width='10'/%3E%3C/svg%3E");
+        background-size: 480px 40px;
+        background-repeat: repeat-x;
+        animation: wave-flow 6s linear infinite;
+        z-index: -1;
+      }
+
+      .red-wave-title::before {
+        content: "";
+        position: absolute;
+        width: 400%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 30px;
+        background-image: url("data:image/svg+xml,%3Csvg width='450' height='30' viewBox='0 0 450 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 15C15 1.66667 30 1.66667 45 15C60 28.3333 75 28.3333 90 15C105 1.66667 120 1.66667 135 15C150 28.3333 165 28.3333 180 15C195 1.66667 210 1.66667 225 15C240 28.3333 255 28.3333 270 15C285 1.66667 300 1.66667 315 15C330 28.3333 345 28.3333 360 15C375 1.66667 390 1.66667 405 15C420 28.3333 435 28.3333 450 15' stroke='oklch(63.7%25%200.237%2025.331)' stroke-width='10' stroke-linecap='square'/%3E%3C/svg%3E");
+        background-size: 450px 30px;
+        background-repeat: repeat-x;
+        animation: wave-flow 6s linear infinite;
+        z-index: -1;
+      }
+
+      .yellow-wave-title::before {
+        content: "";
+        position: absolute;
+        width: 400%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 35px;
+        background-image: url("data:image/svg+xml,%3Csvg width='450' height='35' viewBox='0 0 450 35' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 17.5H450' stroke='oklch(79.5%25%200.184%2086.047)' stroke-width='10' stroke-linecap='square' stroke-dasharray='30 15'/%3E%3C/svg%3E");
+        background-size: 450px 35px;
+        background-repeat: repeat-x;
+        animation: wave-flow 10s linear infinite;
+        z-index: -1;
+      }
+    </style>
   </div>
-
-  <style>
-    .blue-wave-title::before {
-      content: "";
-      position: absolute;
-      width: 400%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      height: 40px;
-      background-image: url("data:image/svg+xml,%3Csvg width='480' height='40' viewBox='0 0 480 40' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 5H30V35H90V5H150V35H210V5H270V35H330V5H390V35H450V5H480' stroke='oklch(62.3%25%200.214%20259.815)' stroke-width='10'/%3E%3C/svg%3E");
-      background-size: 480px 40px;
-      background-repeat: repeat-x;
-      animation: wave-flow 6s linear infinite;
-      z-index: -1;
-    }
-
-    .red-wave-title::before {
-      content: "";
-      position: absolute;
-      width: 400%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      height: 30px;
-      background-image: url("data:image/svg+xml,%3Csvg width='450' height='30' viewBox='0 0 450 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 15C15 1.66667 30 1.66667 45 15C60 28.3333 75 28.3333 90 15C105 1.66667 120 1.66667 135 15C150 28.3333 165 28.3333 180 15C195 1.66667 210 1.66667 225 15C240 28.3333 255 28.3333 270 15C285 1.66667 300 1.66667 315 15C330 28.3333 345 28.3333 360 15C375 1.66667 390 1.66667 405 15C420 28.3333 435 28.3333 450 15' stroke='oklch(63.7%25%200.237%2025.331)' stroke-width='10' stroke-linecap='square'/%3E%3C/svg%3E");
-      background-size: 450px 30px;
-      background-repeat: repeat-x;
-      animation: wave-flow 6s linear infinite;
-      z-index: -1;
-    }
-  </style>
 </SubpageLayout>
